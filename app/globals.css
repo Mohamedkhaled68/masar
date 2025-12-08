@@ -1,26 +1,137 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@font-face {
+    font-family: "cairo";
+    src: url("/fonts/cairo.woff2") format("woff2");
+    font-display: swap;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+@theme {
+    --font-cairo: "cairo", sans-serif;
+
+    /* Radius */
+    --radius-lg: 0.75rem;
+    --radius-md: calc(0.75rem - 2px);
+    --radius-sm: calc(0.75rem - 4px);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+@layer base {
+    :root {
+        /* Masar Design System - Black & Yellow Theme */
+        --background: 0 0% 7%;
+        --foreground: 0 0% 98%;
+
+        --card: 0 0% 10%;
+        --card-foreground: 0 0% 98%;
+
+        --popover: 0 0% 10%;
+        --popover-foreground: 0 0% 98%;
+
+        /* Primary: Vibrant Yellow */
+        --primary: 48 100% 50%;
+        --primary-foreground: 0 0% 0%;
+
+        /* Secondary: Lighter gray for surfaces */
+        --secondary: 0 0% 15%;
+        --secondary-foreground: 0 0% 98%;
+
+        --muted: 0 0% 20%;
+        --muted-foreground: 0 0% 65%;
+
+        /* Accent: Golden Yellow variant */
+        --accent: 45 95% 55%;
+        --accent-foreground: 0 0% 0%;
+
+        --destructive: 0 84% 60%;
+        --destructive-foreground: 0 0% 98%;
+
+        --border: 0 0% 20%;
+        --input: 0 0% 20%;
+        --ring: 48 100% 50%;
+
+        --radius: 0.75rem;
+
+        /* Sidebar variables */
+        --sidebar-background: 0 0% 98%;
+        --sidebar-foreground: 240 5.3% 26.1%;
+        --sidebar-primary: 240 5.9% 10%;
+        --sidebar-primary-foreground: 0 0% 98%;
+        --sidebar-accent: 240 4.8% 95.9%;
+        --sidebar-accent-foreground: 240 5.9% 10%;
+        --sidebar-border: 220 13% 91%;
+        --sidebar-ring: 217.2 91.2% 59.8%;
+    }
+
+    .dark {
+        /* Same as root for dark-first design */
+        --background: 0 0% 7%;
+        --foreground: 0 0% 98%;
+        --card: 0 0% 10%;
+        --card-foreground: 0 0% 98%;
+        --popover: 0 0% 10%;
+        --popover-foreground: 0 0% 98%;
+        --primary: 48 100% 50%;
+        --primary-foreground: 0 0% 0%;
+        --secondary: 0 0% 15%;
+        --secondary-foreground: 0 0% 98%;
+        --muted: 0 0% 20%;
+        --muted-foreground: 0 0% 65%;
+        --accent: 45 95% 55%;
+        --accent-foreground: 0 0% 0%;
+        --destructive: 0 84% 60%;
+        --destructive-foreground: 0 0% 98%;
+        --border: 0 0% 20%;
+        --input: 0 0% 20%;
+        --ring: 48 100% 50%;
+    }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+    * {
+        @apply border-[hsl(var(--border))];
+    }
+
+    body {
+        @apply bg-[hsl(var(--background))] text-[hsl(var(--foreground))];
+        font-family: var(--font-cairo), sans-serif;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        font-family: var(--font-cairo), sans-serif;
+    }
+}
+
+@layer utilities {
+    .animate-fade-in {
+        animation: fadeIn 0.6s ease-out forwards;
+    }
+
+    .animate-slide-up {
+        animation: slideUp 0.8s ease-out forwards;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
 }
