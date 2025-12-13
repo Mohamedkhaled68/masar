@@ -115,7 +115,7 @@ export default function LoginPage() {
             <nav className="container mx-auto px-4 py-8 flex items-center justify-between">
                 <Link href="/">
                     <Image
-                        src="/masar-logo.png"
+                        src="/logo.svg"
                         alt="مسار"
                         width={192}
                         height={64}

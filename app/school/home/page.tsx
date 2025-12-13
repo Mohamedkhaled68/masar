@@ -97,6 +97,21 @@ export default function SchoolHomePage() {
             {/* Header */}
             <header className="border-b border-zinc-800 bg-zinc-900">
                 <div className="container mx-auto px-4 py-6">
+                    {/* Contact Information Banner */}
+                    <div className="mb-4 p-3 bg-zinc-800 border border-zinc-700 rounded-lg flex items-center justify-center gap-3">
+                        <span className="text-zinc-400 text-sm">
+                            للاستفسارات والدعم:
+                        </span>
+                        <a
+                            href="https://wa.me/96891944943"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-lg font-bold text-yellow-400 hover:underline transition-all"
+                            dir="ltr"
+                        >
+                            +968 91944943
+                        </a>
+                    </div>
                     <div className="flex items-center justify-between">
                         <div>
                             <h1 className="text-2xl font-bold text-white">
@@ -106,13 +121,24 @@ export default function SchoolHomePage() {
                                 اختر التخصص المطلوب لعرض المعلمين المتاحين
                             </p>
                         </div>
-                        <button
-                            onClick={handleLogout}
-                            className="flex items-center gap-2 px-4 py-2 bg-zinc-800 text-white rounded-lg hover:bg-zinc-700 transition-all"
-                        >
-                            <LogOut className="w-4 h-4" />
-                            <span>تسجيل الخروج</span>
-                        </button>
+                        <div className="flex items-center gap-3">
+                            <button
+                                onClick={() =>
+                                    router.push("/school/acceptances")
+                                }
+                                className="flex items-center gap-2 px-4 py-2 bg-yellow-400 text-black rounded-lg hover:bg-yellow-500 transition-all font-semibold"
+                            >
+                                <BookOpen className="w-4 h-4" />
+                                <span>طلبات القبول</span>
+                            </button>
+                            <button
+                                onClick={handleLogout}
+                                className="flex items-center gap-2 px-4 py-2 bg-zinc-800 text-white rounded-lg hover:bg-zinc-700 transition-all"
+                            >
+                                <LogOut className="w-4 h-4" />
+                                <span>تسجيل الخروج</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </header>

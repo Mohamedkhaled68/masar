@@ -3,9 +3,10 @@
 import React, { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useAuthStore } from "@/lib/store/authStore";
-import { videoAPI, selectionAPI, specialtyAPI } from "@/lib/api/axios";
+import { videoAPI, acceptanceAPI, specialtyAPI } from "@/lib/api/axios";
 import { TeacherVideoCard } from "@/components/TeacherVideoCard";
 import { ArrowRight, AlertCircle, CheckCircle } from "lucide-react";
+import toast from "react-hot-toast";
 
 interface TeacherVideo {
     _id: string;
@@ -62,7 +63,6 @@ export default function SpecialtyVideosPage() {
                 videosResponse.data.data || videosResponse.data;
             setVideos(responseData.videos || []);
             console.log(responseData);
-            
         } catch (err: any) {
             setError(
                 err.response?.data?.message ||
@@ -73,27 +73,29 @@ export default function SpecialtyVideosPage() {
         }
     };
 
-    const handleSelectTeacher = async (video: TeacherVideo) => {
+    const handleSelectTeacher = async (teacherId: string) => {
         setIsSelecting(true);
         setError("");
         setSuccessMessage("");
 
         try {
-            await selectionAPI.accept({
-                teacherId: video.teacher._id,
-                videoId: video._id,
+            await acceptanceAPI.accept({
+                teacherId: teacherId,
+                notes: `طلب قبول من تخصص ${specialty?.nameAr || ""}`,
             });
             setSuccessMessage(
-                "تم إرسال اختيارك بنجاح، وسيتم التواصل معك عبر الأدمن."
+                "تم إرسال طلب القبول بنجاح! سيتم مراجعة الطلب وسنرسل لك رسالة عبر الواتساب. للاستفسارات يمكنك التواصل معنا على: +968 91944943"
             );
+            toast.success("تم إرسال طلب القبول بنجاح");
 
             // Scroll to top to show success message
             window.scrollTo({ top: 0, behavior: "smooth" });
         } catch (err: any) {
-            setError(
+            const errorMsg =
                 err.response?.data?.message ||
-                    "فشل إرسال الاختيار. حاول مرة أخرى"
-            );
+                "فشل إرسال طلب القبول. حاول مرة أخرى";
+            setError(errorMsg);
+            toast.error(errorMsg);
         } finally {
             setIsSelecting(false);
         }
@@ -134,12 +136,30 @@ export default function SpecialtyVideosPage() {
                 <div className="max-w-6xl mx-auto">
                     {/* Success Message */}
                     {successMessage && (
-                        <div className="mb-8 p-4 bg-green-500/10 border border-green-500/30 rounded-lg flex items-start gap-3">
-                            <CheckCircle className="w-5 h-5 text-green-400 shrink-0 mt-0.5" />
+                        <div className="mb-8 p-6 bg-green-500/10 border-2 border-green-500/30 rounded-xl flex items-start gap-3 shadow-lg">
+                            <CheckCircle className="w-6 h-6 text-green-400 shrink-0 mt-0.5" />
                             <div className="flex-1">
-                                <p className="text-green-400 font-semibold">
-                                    {successMessage}
+                                <h3 className="text-green-400 font-bold text-lg mb-2">
+                                    تم إرسال طلب القبول بنجاح!
+                                </h3>
+                                <p className="text-green-300 mb-3">
+                                    سيتم مراجعة طلبك من قبل الإدارة وسنرسل لك
+                                    رسالة تأكيد عبر الواتساب.
                                 </p>
+                                <div className="bg-zinc-900/50 p-3 rounded-lg mt-3">
+                                    <p className="text-zinc-300 text-sm mb-1">
+                                        للاستفسارات يمكنك التواصل معنا:
+                                    </p>
+                                    <a
+                                        href="https://wa.me/96891944943"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-yellow-400 font-bold text-lg hover:underline inline-block"
+                                        dir="ltr"
+                                    >
+                                        +968 91944943
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     )}
@@ -188,7 +208,7 @@ export default function SpecialtyVideosPage() {
                                 <TeacherVideoCard
                                     key={video._id}
                                     video={video}
-                                    onSelect={() => handleSelectTeacher(video)}
+                                    onSelect={handleSelectTeacher}
                                     isSelecting={isSelecting}
                                 />
                             ))}

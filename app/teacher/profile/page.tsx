@@ -69,7 +69,7 @@ export default function TeacherProfilePage() {
             const response = await teacherAPI.getMe();
             const profileData = response.data.data;
             console.log(profileData);
-            
+
             setProfile(profileData);
 
             // Fetch specialties if teacher has any
@@ -193,6 +193,22 @@ export default function TeacherProfilePage() {
                             </p>
                         </div>
                     )}
+
+                    {/* Contact Information */}
+                    <div className="mb-6 p-4 bg-zinc-900 border border-zinc-800 rounded-lg">
+                        <p className="text-zinc-400 text-sm text-center mb-2">
+                            للاستفسارات والدعم الفني
+                        </p>
+                        <a
+                            href="https://wa.me/96891944943"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xl font-bold text-yellow-400 block text-center hover:underline transition-all"
+                            dir="ltr"
+                        >
+                            +968 91944943
+                        </a>
+                    </div>
 
                     {/* Error Message */}
                     {error && (

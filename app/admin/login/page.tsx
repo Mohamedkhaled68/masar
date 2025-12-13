@@ -107,7 +107,7 @@ export default function AdminLoginPage() {
                 <div className="container mx-auto px-4 py-6">
                     <Link href="/">
                         <Image
-                            src="/masar-logo.png"
+                            src="/logo.svg"
                             alt="مسار"
                             width={192}
                             height={64}

@@ -16,7 +16,7 @@ const Hero = () => {
                 {/* Navigation */}
                 <nav className="flex items-center justify-between mb-20 animate-fade-in">
                     <Image
-                        src="/masar-logo.png"
+                        src="/logo.svg"
                         alt="مسار"
                         width={192}
                         height={64}
@@ -51,17 +51,23 @@ const Hero = () => {
                     </p>
 
                     <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                        <Button variant="hero" size="lg" className="px-10 py-6">
-                            ابدأ الآن
-                            <ArrowLeft className="mr-2 h-5 w-5" />
-                        </Button>
-                        <Button
+                        <Link href="/register">
+                            <Button
+                                variant="hero"
+                                size="lg"
+                                className="px-10 py-6 cursor-pointer"
+                            >
+                                ابدأ الآن
+                                <ArrowLeft className="mr-2 h-5 w-5" />
+                            </Button>
+                        </Link>
+                        {/* <Button
                             variant="outline"
                             size="lg"
                             className="px-10 py-6"
                         >
                             اكتشف المزيد
-                        </Button>
+                        </Button> */}
                     </div>
 
                     {/* Stats */}
@@ -90,6 +96,22 @@ const Hero = () => {
                                 نسبة التوظيف
                             </div>
                         </div>
+                    </div>
+
+                    {/* Contact Information */}
+                    <div className="mt-16 p-6 bg-[hsl(var(--card))] border border-[hsl(var(--border))] rounded-xl max-w-2xl mx-auto">
+                        <p className="text-[hsl(var(--muted-foreground))] text-center mb-2">
+                            للاستفسارات والدعم
+                        </p>
+                        <a
+                            href="https://wa.me/96891944943"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-2xl md:text-3xl font-bold text-[hsl(var(--primary))] block text-center hover:underline transition-all"
+                            dir="ltr"
+                        >
+                            +968 91944943
+                        </a>
                     </div>
                 </div>
             </div>

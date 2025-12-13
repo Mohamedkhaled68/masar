@@ -37,10 +37,8 @@ export default function AdminDashboard() {
                 teachersRes.data.data?.teachers ||
                 teachersRes.data?.teachers ||
                 [];
-            const specialtiesData =
-                specialtiesRes.data.data
-            const schoolsData =
-                schoolsRes.data.data.schools
+            const specialtiesData = specialtiesRes.data.data;
+            const schoolsData = schoolsRes.data.data.schools;
 
             setTeachersCount(
                 Array.isArray(teachersData) ? teachersData.length : 0
@@ -224,12 +222,17 @@ export default function AdminDashboard() {
                                     مراجعة وإدارة فيديوهات المعلمين
                                 </p>
                             </button>
-                            <button className="p-4 bg-zinc-800 border border-zinc-700 rounded-lg hover:border-yellow-400 transition-all text-right">
+                            <button
+                                onClick={() =>
+                                    router.push("/admin/acceptances")
+                                }
+                                className="p-4 bg-zinc-800 border border-zinc-700 rounded-lg hover:border-yellow-400 transition-all text-right"
+                            >
                                 <p className="text-white font-semibold mb-1">
-                                    متابعة الاختيارات
+                                    إدارة طلبات القبول
                                 </p>
                                 <p className="text-sm text-zinc-400">
-                                    متابعة اختيارات المدارس للمعلمين
+                                    مراجعة والموافقة على طلبات قبول المدارس
                                 </p>
                             </button>
                         </div>

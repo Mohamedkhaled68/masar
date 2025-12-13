@@ -305,20 +305,13 @@ export default function RegisterPage() {
             {/* Toast Container */}
             <Toaster />
 
-            {/* Progress Indicator */}
-            <ProgressIndicator
-                currentStep={currentStep}
-                totalSteps={totalSteps}
-                userType={userType}
-            />
-
             {/* Header */}
             <div className="border-b border-zinc-800">
                 <div className="container mx-auto px-4 py-6">
                     <div className="flex items-center justify-between">
                         <Link href="/">
                             <Image
-                                src="/masar-logo.png"
+                                src="/logo.svg"
                                 alt="مسار"
                                 width={192}
                                 height={64}
@@ -336,6 +329,13 @@ export default function RegisterPage() {
                     </div>
                 </div>
             </div>
+
+            {/* Progress Indicator */}
+            <ProgressIndicator
+                currentStep={currentStep}
+                totalSteps={totalSteps}
+                userType={userType}
+            />
 
             {/* Main Form */}
             <div className="container mx-auto px-4 py-12">

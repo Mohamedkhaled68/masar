@@ -106,3 +106,25 @@ export const specialtyAPI = {
         api.put(`/specialties/${id}`, data),
     delete: (id: string) => api.delete(`/specialties/${id}`),
 };
+
+export const acceptanceAPI = {
+    // School endpoints
+    accept: (data: { teacherId: string; notes?: string }) =>
+        api.post("/acceptance/accept", data),
+    getSchoolAcceptances: (params?: { status?: string }) =>
+        api.get("/acceptance/school", { params }),
+
+    // Admin endpoints
+    getAll: (params?: {
+        status?: string;
+        schoolId?: string;
+        teacherId?: string;
+        page?: number;
+        limit?: number;
+    }) => api.get("/acceptance/all", { params }),
+    updateStatus: (
+        id: string,
+        data: { status: "approved" | "rejected" | "pending"; notes?: string }
+    ) => api.put(`/acceptance/${id}/status`, data),
+    delete: (id: string) => api.delete(`/acceptance/${id}`),
+};

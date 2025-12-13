@@ -5,6 +5,9 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
     title: "مسار - منصة توظيف المعلمين",
     description: "نربط المعلمين المتميزين بالمدارس الرائدة في السلطنة",
+    icons: {
+        icon: "/logo.svg",
+    },
 };
 
 export default function RootLayout({

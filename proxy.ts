@@ -5,7 +5,7 @@ import type { NextRequest } from "next/server";
  * Middleware to protect routes and verify JWT access tokens
  * Runs on Next.js Edge Runtime for optimal performance
  */
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
     // Get the pathname from the request URL
     const { pathname } = request.nextUrl;
 

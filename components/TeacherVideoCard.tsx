@@ -20,7 +20,7 @@ interface TeacherVideo {
 
 interface TeacherVideoCardProps {
     video: TeacherVideo;
-    onSelect: () => void;
+    onSelect: (teacherId: string) => void;
     isSelecting?: boolean;
 }
 
@@ -73,7 +73,7 @@ export const TeacherVideoCard: React.FC<TeacherVideoCardProps> = ({
     }, [video.teacher?.specialties]);
 
     const handleSelect = () => {
-        onSelect();
+        onSelect(video.teacher._id);
         setSelected(true);
     };
 
