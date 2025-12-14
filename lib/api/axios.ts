@@ -4,9 +4,7 @@ import Cookies from "js-cookie";
 // Create axios instance
 export const api = axios.create({
     baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api",
-    headers: {
-        "Content-Type": "application/json",
-    },
+    withCredentials: true, 
 });
 
 // Request interceptor to add token from cookies
@@ -79,9 +77,7 @@ export const schoolAPI = {
 
 export const videoAPI = {
     upload: (formData: FormData) =>
-        api.post("/videos/upload", formData, {
-            headers: { "Content-Type": "multipart/form-data" },
-        }),
+        api.post("/videos/upload", formData),
     getAll: (params?: any) => api.get("/videos", { params }),
     getById: (id: string) => api.get(`/videos/${id}`),
     getBySpecialty: (specialty: string) =>

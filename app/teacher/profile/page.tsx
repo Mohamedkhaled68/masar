@@ -68,7 +68,6 @@ export default function TeacherProfilePage() {
             setLoading(true);
             const response = await teacherAPI.getMe();
             const profileData = response.data.data;
-            console.log(profileData);
 
             setProfile(profileData);
 
