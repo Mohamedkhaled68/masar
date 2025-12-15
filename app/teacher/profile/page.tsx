@@ -281,11 +281,29 @@ export default function TeacherProfilePage() {
                                                                 }}
                                                             >
                                                                 <source
-                                                                    src={encodeURI(
-                                                                        `${"https://api.masar.work/api"}${
-                                                                            specialtyVideo.videoUrl
-                                                                        }`
-                                                                    )}
+                                                                    src={
+                                                                        specialtyVideo.videoUrl
+                                                                            ?.trim()
+                                                                            .startsWith(
+                                                                                "http"
+                                                                            )
+                                                                            ? specialtyVideo.videoUrl.trim()
+                                                                            : `${
+                                                                                  process
+                                                                                      .env
+                                                                                      .NODE_ENV ===
+                                                                                  "production"
+                                                                                      ? "https"
+                                                                                      : "http"
+                                                                              }://api.masar.work${
+                                                                                  specialtyVideo.videoUrl?.startsWith(
+                                                                                      "/"
+                                                                                  )
+                                                                                      ? specialtyVideo.videoUrl
+                                                                                      : "/" +
+                                                                                        specialtyVideo.videoUrl
+                                                                              }`
+                                                                    }
                                                                     type="video/mp4"
                                                                 />
                                                                 متصفحك لا يدعم

@@ -373,7 +373,26 @@ export default function TeacherDetailsPage() {
                                             <video
                                                 controls
                                                 className="w-full rounded-lg mb-3"
-                                                src={encodeURI(video.videoUrl)}
+                                                src={
+                                                    video.videoUrl
+                                                        ?.trim()
+                                                        .startsWith("http")
+                                                        ? video.videoUrl.trim()
+                                                        : `${
+                                                              process.env
+                                                                  .NODE_ENV ===
+                                                              "production"
+                                                                  ? "https"
+                                                                  : "http"
+                                                          }://api.masar.work${
+                                                              video.videoUrl.startsWith(
+                                                                  "/"
+                                                              )
+                                                                  ? video.videoUrl
+                                                                  : "/" +
+                                                                    video.videoUrl
+                                                          }`
+                                                }
                                             >
                                                 Your browser does not support
                                                 the video tag.
