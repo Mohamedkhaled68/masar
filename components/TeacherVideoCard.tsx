@@ -33,6 +33,20 @@ export const TeacherVideoCard: React.FC<TeacherVideoCardProps> = ({
     const [specialtyNames, setSpecialtyNames] = useState<string[]>([]);
     const [loadingSpecialties, setLoadingSpecialties] = useState(true);
 
+    // Helper function to construct full video URL
+    const getFullVideoUrl = (videoUrl: string) => {
+        if (!videoUrl) return "";
+        // If URL already starts with http:// or https://, return as is
+        if (videoUrl.startsWith("http://") || videoUrl.startsWith("https://")) {
+            return videoUrl;
+        }
+        // Otherwise, prepend the API base URL
+        const baseUrl = "http://api.masar.work";
+        // Ensure the path starts with /
+        const path = videoUrl.startsWith("/") ? videoUrl : `/${videoUrl}`;
+        return `${baseUrl}${path}`;
+    };
+
     useEffect(() => {
         const fetchSpecialties = async () => {
             if (
@@ -82,9 +96,15 @@ export const TeacherVideoCard: React.FC<TeacherVideoCardProps> = ({
             {/* Video Player */}
             <div className="aspect-video bg-zinc-800 relative group">
                 {video.videoUrl ? (
-                    <video controls className="w-full h-full object-cover">
+                    <video 
+                        controls 
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                            console.error("Video load error:", getFullVideoUrl(video.videoUrl));
+                        }}
+                    >
                         <source
-                            src={encodeURI(video.videoUrl)}
+                            src={getFullVideoUrl(video.videoUrl)}
                             type="video/mp4"
                         />
                         متصفحك لا يدعم تشغيل الفيديو
