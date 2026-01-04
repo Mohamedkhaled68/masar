@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { teacherAPI, specialtyAPI } from "@/lib/api/axios";
 import {
     GraduationCap,
-    Plus,
     Edit2,
     Trash2,
     X,
@@ -43,11 +42,14 @@ interface Specialty {
 export default function TeachersManagementPage() {
     const router = useRouter();
     const [teachers, setTeachers] = useState<Teacher[]>([]);
-    const [filteredTeachers, setFilteredTeachers] = useState<Teacher[]>([]);
     const [specialties, setSpecialties] = useState<Specialty[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedSpecialty, setSelectedSpecialty] = useState("");
     const [loading, setLoading] = useState(true);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [totalItems, setTotalItems] = useState(0);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
     const [showModal, setShowModal] = useState(false);
     const [editingTeacher, setEditingTeacher] = useState<Teacher | null>(null);
     const [formData, setFormData] = useState({
@@ -62,17 +64,56 @@ export default function TeachersManagementPage() {
         fetchTeachers();
         fetchSpecialties();
     }, []);
+    useEffect(() => {
+        console.log(specialties);
+    }, [specialties]);
 
     useEffect(() => {
-        filterTeachers();
-    }, [searchQuery, selectedSpecialty, teachers]);
+        console.log("teachers");
+        console.log(teachers);
+    }, [teachers]);
 
-    const fetchTeachers = async (specialtyId?: string) => {
+    useEffect(() => {
+        if (searchQuery.length === 0 || searchQuery.length >= 3) {
+            setCurrentPage(1);
+            fetchTeachers(selectedSpecialty, 1, searchQuery);
+        }
+    }, [searchQuery, selectedSpecialty]);
+
+    const fetchTeachers = async (
+        specialtyId?: string,
+        page: number = 1,
+        search?: string
+    ) => {
         try {
             setLoading(true);
-            const params = specialtyId ? { specialty: specialtyId } : undefined;
-            const response = await teacherAPI.getAll(params);
+            let response;
+
+            if (search && search.trim()) {
+                // Use search endpoint for name-based search
+                const searchParams: any = { search: search.trim() };
+                if (specialtyId) {
+                    searchParams.specialtyId = specialtyId;
+                }
+                response = await teacherAPI.search(searchParams);
+            } else {
+                // Use getAll endpoint for regular listing with filters
+                const params: any = { page };
+                if (specialtyId) {
+                    params.specialtyId = specialtyId;
+                }
+                response = await teacherAPI.getAll(params);
+            }
+
             const teachersData = response.data.data.teachers;
+
+            // Update pagination state
+            if (response.data.data.pagination) {
+                setCurrentPage(response.data.data.pagination.currentPage);
+                setTotalPages(response.data.data.pagination.totalPages);
+                setTotalItems(response.data.data.pagination.totalItems);
+                setItemsPerPage(response.data.data.pagination.itemsPerPage);
+            }
 
             // Fetch specialty details for each teacher
             const teachersWithSpecialties = await Promise.all(
@@ -83,11 +124,17 @@ export default function TeachersManagementPage() {
                     ) {
                         const specialtiesData = await Promise.all(
                             teacher.specialties.map(
-                                async (specialtyId: string) => {
+                                async (specialtyId: string | any) => {
                                     try {
+                                        const exactSpecialtyId = search
+                                            ? (typeof specialtyId === 'object' ? specialtyId._id : specialtyId)
+                                            : specialtyId;
+
                                         const res = await specialtyAPI.getById(
-                                            specialtyId
+                                            exactSpecialtyId
                                         );
+                                        console.log("ss :", res);
+
                                         return res.data.data || res.data;
                                     } catch (error) {
                                         console.error(
@@ -128,38 +175,6 @@ export default function TeachersManagementPage() {
         } catch (error) {
             console.error("Failed to fetch specialties:", error);
         }
-    };
-
-    const filterTeachers = () => {
-        if (!Array.isArray(teachers)) {
-            setFilteredTeachers([]);
-            return;
-        }
-
-        let filtered = [...teachers];
-
-        // Filter by search query
-        if (searchQuery.trim()) {
-            filtered = filtered.filter(
-                (teacher) =>
-                    teacher.fullName
-                        ?.toLowerCase()
-                        .includes(searchQuery.toLowerCase()) ||
-                    teacher.phoneNumber?.includes(searchQuery) ||
-                    teacher.email
-                        ?.toLowerCase()
-                        .includes(searchQuery.toLowerCase())
-            );
-        }
-
-        // Filter by specialty
-        if (selectedSpecialty) {
-            filtered = filtered.filter((teacher) =>
-                teacher.specialties?.includes(selectedSpecialty)
-            );
-        }
-
-        setFilteredTeachers(filtered);
     };
 
     const handleOpenModal = (teacher?: Teacher) => {
@@ -329,7 +344,7 @@ export default function TeachersManagementPage() {
                     </div>
 
                     <p className="text-sm text-zinc-400">
-                        {filteredTeachers.length} معلم
+                        عرض {teachers.length} من {totalItems} معلم
                     </p>
                 </div>
 
@@ -338,7 +353,7 @@ export default function TeachersManagementPage() {
                         <div className="inline-block w-8 h-8 border-4 border-blue-400 border-t-transparent rounded-full animate-spin"></div>
                         <p className="text-zinc-400 mt-4">جاري التحميل...</p>
                     </div>
-                ) : filteredTeachers.length === 0 ? (
+                ) : teachers.length === 0 ? (
                     <div className="text-center py-12">
                         <GraduationCap className="w-16 h-16 text-zinc-600 mx-auto mb-4" />
                         <p className="text-zinc-400 text-lg">
@@ -349,7 +364,7 @@ export default function TeachersManagementPage() {
                     </div>
                 ) : (
                     <div className="grid gap-6">
-                        {filteredTeachers.map((teacher) => (
+                        {teachers.map((teacher) => (
                             <div
                                 key={teacher._id}
                                 className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 hover:border-blue-400/50 transition-all cursor-pointer"
@@ -450,6 +465,90 @@ export default function TeachersManagementPage() {
                                 </div>
                             </div>
                         ))}
+                    </div>
+                )}
+
+                {/* Pagination */}
+                {!loading && totalPages > 1 && (
+                    <div className="mt-8 flex items-center justify-center gap-2">
+                        <button
+                            onClick={() => {
+                                const newPage = currentPage - 1;
+                                setCurrentPage(newPage);
+                                fetchTeachers(
+                                    selectedSpecialty,
+                                    newPage,
+                                    searchQuery
+                                );
+                            }}
+                            disabled={currentPage === 1}
+                            className="px-4 py-2 bg-zinc-900 border border-zinc-800 text-white rounded-lg hover:bg-zinc-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            السابق
+                        </button>
+
+                        <div className="flex gap-2">
+                            {[...Array(totalPages)].map((_, index) => {
+                                const page = index + 1;
+                                // Show first page, last page, current page, and pages around current
+                                if (
+                                    page === 1 ||
+                                    page === totalPages ||
+                                    (page >= currentPage - 1 &&
+                                        page <= currentPage + 1)
+                                ) {
+                                    return (
+                                        <button
+                                            key={page}
+                                            onClick={() => {
+                                                setCurrentPage(page);
+                                                fetchTeachers(
+                                                    selectedSpecialty,
+                                                    page,
+                                                    searchQuery
+                                                );
+                                            }}
+                                            className={`px-4 py-2 rounded-lg transition-all ${
+                                                currentPage === page
+                                                    ? "bg-blue-500 text-white"
+                                                    : "bg-zinc-900 border border-zinc-800 text-white hover:bg-zinc-800"
+                                            }`}
+                                        >
+                                            {page}
+                                        </button>
+                                    );
+                                } else if (
+                                    page === currentPage - 2 ||
+                                    page === currentPage + 2
+                                ) {
+                                    return (
+                                        <span
+                                            key={page}
+                                            className="px-2 py-2 text-zinc-400"
+                                        >
+                                            ...
+                                        </span>
+                                    );
+                                }
+                                return null;
+                            })}
+                        </div>
+
+                        <button
+                            onClick={() => {
+                                const newPage = currentPage + 1;
+                                setCurrentPage(newPage);
+                                fetchTeachers(
+                                    selectedSpecialty,
+                                    newPage,
+                                    searchQuery
+                                );
+                            }}
+                            disabled={currentPage === totalPages}
+                            className="px-4 py-2 bg-zinc-900 border border-zinc-800 text-white rounded-lg hover:bg-zinc-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            التالي
+                        </button>
                     </div>
                 )}
             </div>
